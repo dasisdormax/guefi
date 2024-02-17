@@ -9,3 +9,7 @@ members = [
 	"guefi-worker",
 	"guefi",
 ]
+
+default-members = [
+	"guefi"
+]
