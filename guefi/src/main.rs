@@ -1,4 +1,4 @@
-use guefi_lib::add;
+use guefi_lib::{add, get_entries};
 use iced::{futures::FutureExt, widget::{button, checkbox, column, container, scrollable, text, vertical_space}, window::{self, Action}, Command, Element, Length, Sandbox, Settings, Theme};
 
 #[derive(Debug, Clone)]
@@ -36,13 +36,14 @@ impl Sandbox for MainWindow {
     }
 
     fn view(&self) -> Element<Self::Message> {
+        let entries = get_entries();
         let mut cols: Vec<Element<_>> = vec![
             text("guEFI").into(),
             checkbox("Check!", false).into(),
             button("AddOne").on_press(Message::AddOne).into(),
             button("Clear").on_press(Message::Clear).into()
         ];
-        let items: Vec<Element<_>> = self.messages.iter().map(|item| text(item).into()).collect();
+        let items: Vec<Element<_>> = entries.iter().map(|item| text(item).into()).collect();
         //cols.splice(2..2, items);
         let item_list = scrollable(
             column(items).spacing(5).padding(5)
