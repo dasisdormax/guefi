@@ -1,0 +1,101 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'guefi-lib'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=guefi-lib"
+                ],
+                "filter": {
+                    "name": "guefi-lib",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'guefi-worker'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=guefi-worker",
+                    "--package=guefi-worker"
+                ],
+                "filter": {
+                    "name": "guefi-worker",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'guefi-worker'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=guefi-worker",
+                    "--package=guefi-worker"
+                ],
+                "filter": {
+                    "name": "guefi-worker",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'guefi'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=guefi",
+                    "--package=guefi"
+                ],
+                "filter": {
+                    "name": "guefi",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'guefi'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=guefi",
+                    "--package=guefi"
+                ],
+                "filter": {
+                    "name": "guefi",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
