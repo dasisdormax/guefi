@@ -2,8 +2,6 @@
 
 resolver = "2"
 
-license = "GPL-2.0-or-later"
-
 members = [
 	"guefi-lib",
 	"guefi-worker",
