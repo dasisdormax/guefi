@@ -1,23 +1,38 @@
+mod pages;
+mod status;
+
 use guefi_lib::{add, get_entries};
-use iced::{futures::FutureExt, widget::{button, checkbox, column, container, scrollable, text, vertical_space}, window::{self, Action}, Command, Element, Length, Sandbox, Settings, Theme};
+use iced::{futures::FutureExt, widget::{button, checkbox, column, container, row, scrollable, text, vertical_space}, window::{self, Action}, Command, Element, Length, Sandbox, Settings, Theme};
+use pages::boot::BootPage;
+use status::StatusPanel;
 
 #[derive(Debug, Clone)]
 enum Message {
-    AddOne,
-    AddText(String),
-    Clear
+    SwitchPage(Page),
+    Boot(pages::boot::Message),
 }
 
-#[derive(Default)]
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum Page {
+    Boot,
+    Security,
+    Encryption
+}
+
 struct MainWindow {
-    messages: Vec<String>
+    current_page: Page,
+    boot_page: BootPage,
 }
 
 impl Sandbox for MainWindow {
     type Message = Message;
 
     fn new() -> Self {
-        MainWindow::default()
+        MainWindow {
+            current_page: Page::Boot,
+            boot_page: BootPage::new(),
+        }
     }
 
     fn title(&self) -> String {
@@ -26,29 +41,35 @@ impl Sandbox for MainWindow {
 
     fn update(&mut self, message: Self::Message) {
         match message {
-            Message::Clear => self.messages.clear(),
-            Message::AddOne => {
-                let msg = Message::AddText(format!("{}", self.messages.len() + 1));
-                self.update(msg);
-            }
-            Message::AddText(text) => self.messages.push(text)
+            Message::SwitchPage(page) => self.current_page = page,
+            Message::Boot(msg) => self.boot_page.update(msg),
         };
     }
 
     fn view(&self) -> Element<Self::Message> {
-        let entries = get_entries();
+        let content = match &self.current_page {
+            Page::Boot => self.boot_page.view().map(Message::Boot),
+            page => text(format!("{:?}", page)).into()
+        };
+
+        let page = scrollable(content).width(Length::Fill).height(Length::Fill).into();
+
+        let tab = |text: &'static str, page: Page| {
+            let disabled = self.current_page == page;
+            button(text).on_press_maybe(Some(Message::SwitchPage(page)).filter(|_| !disabled))
+        };
+
+        let tab_row = row!(
+            tab("Boot Entries", Page::Boot),
+            tab("Security", Page::Security),
+            tab("Encryption", Page::Encryption)
+        );
+
         let mut cols: Vec<Element<_>> = vec![
-            text("guEFI").into(),
-            checkbox("Check!", false).into(),
-            button("AddOne").on_press(Message::AddOne).into(),
-            button("Clear").on_press(Message::Clear).into()
+            tab_row.into(),
+            page,
+            StatusPanel::view()
         ];
-        let items: Vec<Element<_>> = entries.iter().map(|item| text(item).into()).collect();
-        //cols.splice(2..2, items);
-        let item_list = scrollable(
-            column(items).spacing(5).padding(5)
-        ).width(Length::Fill).height(Length::Fill).into();
-        cols.insert(2, item_list);
         column(cols).spacing(10).padding(10).into()
     }
 }
