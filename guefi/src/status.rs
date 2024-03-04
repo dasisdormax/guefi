@@ -1,4 +1,4 @@
-use iced::{widget::{scrollable, text, column, row}, Element, Length};
+use iced::{widget::{text, row}, Element};
 
 pub struct StatusPanel {
 
@@ -13,7 +13,7 @@ impl StatusPanel {
         Self {}
     }
 
-    pub fn update(&mut self, message: Message) {
+    pub fn update(&mut self, _message: Message) {
 
     }
 

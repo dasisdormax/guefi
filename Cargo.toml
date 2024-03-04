@@ -9,5 +9,5 @@ members = [
 ]
 
 default-members = [
-	"guefi"
+	"guefi", "guefi-worker"
 ]

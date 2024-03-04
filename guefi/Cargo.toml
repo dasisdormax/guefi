@@ -10,4 +10,7 @@ license = "GPL-3.0-or-later"
 [dependencies]
 iced = "0.12.0"
 ipc-rpc = "1.2.6"
+ipc-channel = "0.18.0"
+async-once-cell = "0.5.3"
+tokio = "1.36.0"
 guefi-lib = { path = "../guefi-lib" }
