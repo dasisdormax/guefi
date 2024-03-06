@@ -1,6 +1,10 @@
-use iced::{Element, Length, Sandbox, Settings};
+use std::marker::PhantomData;
+
+use guefi_lib::system::{LocalSystem, System};
+use iced::{executor, Application, Command, Element, Length, Settings, Theme};
 use iced::widget::{button, column, row, scrollable, text};
 
+use crate::pages::Page;
 use crate::pages::boot::{self, BootPage};
 use crate::status::StatusPanel;
 
@@ -10,37 +14,44 @@ pub enum Message {
     Boot(boot::Message),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Page {
-    Boot,
-    Security,
-    Encryption
+pub struct MainWindow<AppSystem: System = LocalSystem> {
+    current_page: Page,
+    boot_page: BootPage,
+    _sys: PhantomData<AppSystem>
 }
 
-pub struct MainWindow {
-    pub current_page: Page,
-    pub boot_page: BootPage,
-}
-
-impl Sandbox for MainWindow {
+impl<AppSystem: System> Application for MainWindow<AppSystem> {
+    type Executor = executor::Default;
+    type Flags = ();
+    type Theme = Theme;
     type Message = Message;
 
-    fn new() -> Self {
-        MainWindow {
-            current_page: Page::Boot,
-            boot_page: BootPage::new(),
-        }
+    fn new(_flags: Self::Flags) -> (Self, Command<Message>) {
+        (
+            MainWindow {
+                current_page: Page::Boot,
+                boot_page: BootPage::new(),
+                _sys: PhantomData
+            },
+            Command::perform(
+                AppSystem::get_boot_entries(), 
+                |result| Message::Boot(boot::Message::OnGetBootEntries(result))
+            )
+        )
     }
 
     fn title(&self) -> String {
         String::from("guEFI")
     }
 
-    fn update(&mut self, message: Self::Message) {
+    fn update(&mut self, message: Self::Message) -> Command<Message> {
         match message {
-            Message::SwitchPage(page) => self.current_page = page,
+            Message::SwitchPage(page) => {
+                self.current_page = page
+            },
             Message::Boot(msg) => self.boot_page.update(msg),
         };
+        Command::none()
     }
 
     fn view(&self) -> Element<Self::Message> {

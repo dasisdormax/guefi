@@ -11,3 +11,6 @@ license = "GPL-3.0-or-later"
 tokio = "1.36.0"
 ipc-rpc = "1.2.6"
 guefi-lib = { path = "../guefi-lib" }
+async-once-cell = "0.5.3"
+schemars = "0.8.16"
+serde = "1.0.197"

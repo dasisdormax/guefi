@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use crate::system::System;
+use guefi_lib::system::System;
 
 pub mod message;
 

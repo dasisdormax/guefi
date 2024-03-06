@@ -3,7 +3,7 @@ use window::MainWindow;
 mod pages;
 mod status;
 mod window;
-mod remote;
+use guefi_worker::remote;
 
 fn main() -> iced::Result {
     MainWindow::run_app()

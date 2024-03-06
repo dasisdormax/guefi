@@ -1,8 +1,8 @@
 use super::System;
 
-pub struct SystemImpl;
+pub struct LocalSystem;
 
-impl System for SystemImpl {
+impl System for LocalSystem {
     async fn get_boot_entries() -> Result<Vec<String>, String> {
         let efi = efivar::system();
         let res_entries = efi.get_boot_entries();

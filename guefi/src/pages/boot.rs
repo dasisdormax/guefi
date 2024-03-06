@@ -4,7 +4,7 @@ use iced::{widget::{text, column}, Element};
 
 #[derive(Debug, Clone)]
 pub enum Message {
-    SetEntries(Vec<String>)
+    OnGetBootEntries(Result<Vec<String>, String>),
 }
 
 pub struct BootPage {
@@ -20,7 +20,10 @@ impl BootPage {
 
     pub fn update(&mut self, _message: Message) {
         match _message {
-            Message::SetEntries(entries) => self.entries = entries
+            Message::OnGetBootEntries(result) => {
+                let entries = result.unwrap_or_else(|err| vec![err]);
+                self.entries = entries
+            }
         }
     }
 

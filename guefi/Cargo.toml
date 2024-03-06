@@ -8,9 +8,7 @@ license = "GPL-3.0-or-later"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-iced = "0.12.0"
-ipc-rpc = "1.2.6"
-ipc-channel = "0.18.0"
-async-once-cell = "0.5.3"
 tokio = "1.36.0"
+iced = { version = "0.12.0", features = [ "tokio" ] }
 guefi-lib = { path = "../guefi-lib" }
+guefi-worker = { path = "../guefi-worker" }

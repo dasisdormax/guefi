@@ -2,7 +2,8 @@ use std::ffi::OsString;
 
 use async_once_cell::OnceCell;
 
-use guefi_lib::{system::System, worker::message::Message};
+use crate::worker::message::Message;
+use guefi_lib::system::System;
 use ipc_rpc::IpcRpc;
 
 pub struct Remote {

@@ -1,7 +1,9 @@
-mod r#impl;
+mod local;
 
-pub use r#impl::SystemImpl;
+use std::future::Future;
+
+pub use local::LocalSystem;
 
 pub trait System {
-    async fn get_boot_entries() -> Result<Vec<String>, String>;
+    fn get_boot_entries() -> impl Future<Output = Result<Vec<String>, String>> + 'static + Send;
 }
