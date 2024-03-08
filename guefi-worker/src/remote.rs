@@ -1,5 +1,5 @@
 use tokio::sync::{Mutex, MutexGuard};
-use std::{cell::{Cell, RefCell, UnsafeCell}, ffi::OsString, ops::{Deref, DerefMut}};
+use std::{env::current_exe, ffi::OsString, ops::{Deref, DerefMut}};
 
 use crate::worker::message::{Command, Message, Response};
 use guefi_lib::system::System;
@@ -39,6 +39,12 @@ impl System for Remote {
     }
 }
 
+fn worker_executable() -> String {
+    let exe = current_exe().unwrap();
+    let path = exe.parent().unwrap();
+    format!("{}/guefi-worker", path.to_string_lossy())
+}
+
 impl Remote {
     async fn get_instance<'a>() -> RemoteGuard<'a> {
         let mut guard = REMOTE_INSTANCE.lock().await;
@@ -53,12 +59,14 @@ impl Remote {
     }
 
     async fn new() -> Remote {
+        let worker_exe = worker_executable();
         let mut server_client_combo = IpcRpc::build()
             .finish(
-                "target/debug/examples/client",
+                "pkexec",
                 Self::message_handler,
                 |key, cmd| {
                     let key: OsString = key.into();
+                    cmd.arg(worker_exe);
                     cmd.arg(key);
                 },
             )

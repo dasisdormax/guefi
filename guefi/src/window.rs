@@ -1,6 +1,7 @@
 use std::marker::PhantomData;
 
 use guefi_lib::system::{LocalSystem, System};
+use guefi_worker::remote::Remote;
 use iced::{executor, Application, Command, Element, Length, Settings, Theme};
 use iced::widget::{button, column, row, scrollable, text};
 
@@ -14,7 +15,7 @@ pub enum Message {
     Boot(boot::Message),
 }
 
-pub struct MainWindow<AppSystem: System = LocalSystem> {
+pub struct MainWindow<AppSystem: System = Remote> {
     current_page: Page,
     boot_page: BootPage,
     _sys: PhantomData<AppSystem>
